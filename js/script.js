@@ -35,26 +35,53 @@ const itemsToShow = 10;
        that will be passed into the parens later when you call or 
        "invoke" the function 
 ***/
-function showPage(studentsLi, page) {
+function showPage(lis, page) {
    const startIndex = (page * itemsToShow) - itemsToShow;
    const endIndex = page * itemsToShow;
 
-   for (let i = 0; i < studentsLi.length; i++) {
+   for (let i = 0; i < lis.length; i++) {
       if( i >= startIndex && i < endIndex){
-         studentsLi[i].style.display = '';
+         lis[i].style.display = '';
       } else {
-         studentsLi[i].style.display = 'none';
+         lis[i].style.display = 'none';
       }
    }
 }
-showPage(studentsLi,1);
+
+function createElement(tagName, properties, values){
+   const element = document.createElement(tagName);
+
+   for(let i = 0; i < properties.length; i++) {
+      if(properties[i]){
+         element[properties[i]] = values[i];
+      }
+   }
+   return element;
+}
 
 /*** 
-   Create the `appendPageLinks function` to generate, append, and add 
-   functionality to the pagination buttons.
-***/
+ Create the `appendPageLinks function` to generate, append, and add 
+ functionality to the pagination buttons.
+ ***/
+function appendPageLinks(lis) {
+   const mainDiv = document.querySelector('div.page');
+   const div = createElement('div',['className'],['pagination']);
+   const pages = parseInt(Math.floor(lis.length / itemsToShow));
+   
+   for (let i = 1; i <= pages; i++) {
+      let aLink;
+      if (i === 1) {
+         aLink = createElement('a',['className','href','textContent'],['active','#',1]);
+      } else {
+         aLink = createElement('a',['href','textContent'],['#',i]);
+      }
+      div.appendChild(aLink);
+   }
+   mainDiv.appendChild(div);
+}
 
-
+showPage(studentsLi,1);
+appendPageLinks(studentsLi);
 
 
 
