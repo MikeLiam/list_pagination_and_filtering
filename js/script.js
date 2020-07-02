@@ -16,7 +16,8 @@ FSJS project 2 - List Filter and Pagination
    will only be used inside of a function, then it can be locally 
    scoped to that function.
 ***/
-
+let studentLi = document.querySelectorAll('li.student-item');
+const itemsToShow = 10;
 
 
 
@@ -34,7 +35,6 @@ FSJS project 2 - List Filter and Pagination
        that will be passed into the parens later when you call or 
        "invoke" the function 
 ***/
-
 
 
 
