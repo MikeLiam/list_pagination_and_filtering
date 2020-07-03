@@ -79,7 +79,7 @@ function appendPageLinks(lis) {
    const mainDiv = document.querySelector('div.page');
    const div = document.createElement('div')
    const ul = document.createElement('ul');
-   const pages = parseInt(Math.floor(lis.length / itemsToShow));  
+   const pages = parseInt(Math.ceil(lis.length / itemsToShow));  
    
    div.className = 'pagination';
    
@@ -87,13 +87,15 @@ function appendPageLinks(lis) {
       const li = createLi(i);
       ul.appendChild(li);
    }
-   ul.firstElementChild.firstElementChild.className = 'active';
+   // define class active in 'a' element in first 'li'
+   ul.firstElementChild.querySelector('a').className = 'active';
    div.appendChild(ul);
    mainDiv.appendChild(div);
 
    div.addEventListener('click', (e) => {
       const link = e.target;
       if( link.tagName === 'A') {
+         // Get element 'a' active before click
          const oldActive = link.parentNode.parentNode.querySelector('a.active');
          oldActive.className = '';
          showPage(studentsLi,link.textContent);
