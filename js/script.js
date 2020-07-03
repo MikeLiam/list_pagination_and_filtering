@@ -20,6 +20,20 @@ let studentsLi = document.querySelectorAll('li.student-item');
 const itemsToShow = 10;
 
 
+// exceeds expectations
+const searchDiv = document.createElement('div');
+searchDiv.className = 'student-search';
+const input = document.createElement('input');
+input.placeholder = 'Search for students...';
+const button = document.createElement('button');
+button.textContent = 'search';
+searchDiv.appendChild(input);
+searchDiv.appendChild(button);
+
+const mainHeaderDiv = document.querySelector('div.page-header');
+mainHeaderDiv.appendChild(searchDiv);
+
+
 
 /*** 
    Create the `showPage` function to hide all of the items in the 
