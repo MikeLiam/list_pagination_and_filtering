@@ -87,12 +87,21 @@ function appendPageLinks(lis) {
       const li = createLi(i);
       ul.appendChild(li);
    }
-   ul.firstElementChild.className = 'active';
+   ul.firstElementChild.firstElementChild.className = 'active';
    div.appendChild(ul);
    mainDiv.appendChild(div);
+
+   div.addEventListener('click', (e) => {
+      const link = e.target;
+      if( link.tagName === 'A') {
+         const oldActive = link.parentNode.parentNode.querySelector('a.active');
+         oldActive.className = '';
+         showPage(studentsLi,link.textContent);
+         link.className = 'active';
+      }
+   });
 }
 
-showPage(studentsLi,1);
 appendPageLinks(studentsLi);
 
 
