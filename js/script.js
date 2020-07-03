@@ -48,15 +48,27 @@ function showPage(lis, page) {
    }
 }
 
-function createElement(tagName, properties, values){
-   const element = document.createElement(tagName);
 
-   for(let i = 0; i < properties.length; i++) {
-      if(properties[i]){
-         element[properties[i]] = values[i];
+function createLi(page) {
+   function createElement(tagName, properties, values){
+      const element = document.createElement(tagName);
+   
+      for(let i = 0; i < properties.length; i++) {
+         if(properties[i]){
+            element[properties[i]] = values[i];
+         }
       }
+      return element;
    }
-   return element;
+   
+   function appendToLi(tagName, properties, values) {
+      const element = createElement(tagName,properties,values);
+      li.appendChild(element);
+   }
+   
+   const li = document.createElement('li');
+   appendToLi('a',['href','textContent'],['#',page]);
+   return li;
 }
 
 /*** 
@@ -65,18 +77,18 @@ function createElement(tagName, properties, values){
  ***/
 function appendPageLinks(lis) {
    const mainDiv = document.querySelector('div.page');
-   const div = createElement('div',['className'],['pagination']);
-   const pages = parseInt(Math.floor(lis.length / itemsToShow));
+   const div = document.createElement('div')
+   const ul = document.createElement('ul');
+   const pages = parseInt(Math.floor(lis.length / itemsToShow));  
+   
+   div.className = 'pagination';
    
    for (let i = 1; i <= pages; i++) {
-      let aLink;
-      if (i === 1) {
-         aLink = createElement('a',['className','href','textContent'],['active','#',1]);
-      } else {
-         aLink = createElement('a',['href','textContent'],['#',i]);
-      }
-      div.appendChild(aLink);
+      const li = createLi(i);
+      ul.appendChild(li);
    }
+   ul.firstElementChild.className = 'active';
+   div.appendChild(ul);
    mainDiv.appendChild(div);
 }
 
