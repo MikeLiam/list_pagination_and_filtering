@@ -104,6 +104,7 @@ function appendPageLinks(lis) {
    });
 }
 
+showPage(studentsLi, 1);
 appendPageLinks(studentsLi);
 
 
