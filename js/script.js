@@ -2,7 +2,7 @@
 Treehouse Techdegree:
 FSJS project 2 - List Filter and Pagination
 ******************************************/
-   
+
 // Study guide for this project - https://drive.google.com/file/d/1OD1diUsTMdpfMDv677TfL1xO2CEkykSz/view?usp=sharing
 
 
@@ -13,9 +13,9 @@ const studentsLi = document.querySelectorAll('li.student-item');
 const itemsToShow = 10;
 
 
-// exceeds expectations
+// exceeds expectations 
 /**
- * Create search div
+ * Create and append search div
  */
 const searchDiv = document.createElement('div');
 searchDiv.className = 'student-search';
@@ -45,20 +45,20 @@ mainHeaderDiv.appendChild(searchDiv);
  * @param {HTML element} searchInput 
  */
 function search(studentsLi, searchInput) {
-   function printSearch(matches, lis){
-      if(matches === false) {
+   function printSearch(matches, lis) {
+      if (matches === false) {
          message.style.display = '';
       } else {
          message.style.display = 'none';
       }
-      showPage(lis,1);
+      showPage(lis, 1);
       appendPageLinks(lis);
-   
+
    }
 
    let matches = false;
    const studentsSearch = [];
-   
+
    // Loop global Array and populate a new one with elements found. 
    // Change display to none in global Array elements
    for (let i = 0; i < studentsLi.length; i++) {
@@ -68,7 +68,7 @@ function search(studentsLi, searchInput) {
       if (student.includes(search)) {
          matches = true;
          studentsSearch.push(studentsLi[i]);
-      } 
+      }
       studentsLi[i].style.display = 'none';
    }
 
@@ -78,24 +78,19 @@ function search(studentsLi, searchInput) {
 // Event listener for button 'Search'
 button.addEventListener('click', (e) => {
    const input = e.target.previousElementSibling;
-   search(studentsLi,input);
+   search(studentsLi, input);
 });
 
 // Event Listener for input text
 input.addEventListener('keyup', (e) => {
    console.log(e.target.value);
-   search(studentsLi,e.target);
+   search(studentsLi, e.target);
 });
 
-/*** 
-     - Remember that a function `parameter` goes in the parens when 
-       you initially define the function, and it acts as a variable 
-       or a placeholder to represent the actual function `argument` 
-       that will be passed into the parens later when you call or 
-       "invoke" the function 
-***/
+// End of exceeds expectations
+// Meets expectations
 /**
- * Hide all of the items in the list except for the $itemToshow you want to show
+ * Hide all of the items in the list except for the variable itemToshow you want to show
  * in a given page
  * @param {Array} lis 
  * @param {number} page 
@@ -105,7 +100,7 @@ function showPage(lis, page) {
    const endIndex = page * itemsToShow;
 
    for (let i = 0; i < lis.length; i++) {
-      if( i >= startIndex && i < endIndex){
+      if (i >= startIndex && i < endIndex) {
          lis[i].style.display = '';
       } else {
          lis[i].style.display = 'none';
@@ -124,11 +119,11 @@ function createLi(page) {
     * @param {Array} properties 
     * @param {Array} values 
     */
-   function createElement(tagName, properties, values){
+   function createElement(tagName, properties, values) {
       const element = document.createElement(tagName);
-   
-      for(let i = 0; i < properties.length; i++) {
-         if(properties[i]){
+
+      for (let i = 0; i < properties.length; i++) {
+         if (properties[i]) {
             element[properties[i]] = values[i];
          }
       }
@@ -141,12 +136,12 @@ function createLi(page) {
     * @param {Array} values 
     */
    function appendToLi(tagName, properties, values) {
-      const element = createElement(tagName,properties,values);
+      const element = createElement(tagName, properties, values);
       li.appendChild(element);
    }
-   
+
    const li = document.createElement('li');
-   appendToLi('a',['href','textContent'],['#',page]);
+   appendToLi('a', ['href', 'textContent'], ['#', page]);
    return li;
 }
 
@@ -157,33 +152,38 @@ function createLi(page) {
 function appendPageLinks(lis) {
    const mainDiv = document.querySelector('div.page');
    const oldDiv = mainDiv.querySelector('div.pagination');
+   
+   const pages = parseInt(Math.ceil(lis.length / itemsToShow));
+
    const div = document.createElement('div');
    const ul = document.createElement('ul');
-   const pages = parseInt(Math.ceil(lis.length / itemsToShow));  
-
    div.className = 'pagination';
-   
-   for (let i = 1; i <= pages; i++) {
-      const li = createLi(i);
-      ul.appendChild(li);
+   // For no results, no pagination links needed
+   if (pages > 0) {
+      for (let i = 0; i < pages; i++) {
+         const li = createLi(i + 1);
+         ul.appendChild(li);
+      }
+      // define class active in 'a' element in first 'li'
+      ul.firstElementChild.querySelector('a').className = 'active';
+      div.appendChild(ul);
    }
-   // define class active in 'a' element in first 'li'
-   ul.firstElementChild.querySelector('a').className = 'active';
-   div.appendChild(ul);
-   
+   // Remove if exits previous pagination links
    if (oldDiv) {
       mainDiv.removeChild(oldDiv);
    }
-      mainDiv.appendChild(div);
-   
-   
+
+   mainDiv.appendChild(div);
+
+   // Event listener added in div.pagination to only listen to <a> elements
    div.addEventListener('click', (e) => {
       const link = e.target;
-      if( link.tagName === 'A') {
-         // Get element 'a' active before click
+      if (link.tagName === 'A') {
+         // Get <a> element active before click and change it
          const oldActive = link.parentNode.parentNode.querySelector('a.active');
          oldActive.className = '';
-         showPage(lis,link.textContent);
+         showPage(lis, link.textContent);
+         // New <a> element active
          link.className = 'active';
       }
    });
