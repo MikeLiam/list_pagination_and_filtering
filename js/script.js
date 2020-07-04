@@ -6,49 +6,100 @@ FSJS project 2 - List Filter and Pagination
 // Study guide for this project - https://drive.google.com/file/d/1OD1diUsTMdpfMDv677TfL1xO2CEkykSz/view?usp=sharing
 
 
-/*** 
-   Add your global variables that store the DOM elements you will 
-   need to reference and/or manipulate. 
-   
-   But be mindful of which variables should be global and which 
-   should be locally scoped to one of the two main functions you're 
-   going to create. A good general rule of thumb is if the variable 
-   will only be used inside of a function, then it can be locally 
-   scoped to that function.
-***/
-let studentsLi = document.querySelectorAll('li.student-item');
+/**
+ * Global variables
+ */
+const studentsLi = document.querySelectorAll('li.student-item');
 const itemsToShow = 10;
 
 
 // exceeds expectations
+/**
+ * Create search div
+ */
 const searchDiv = document.createElement('div');
 searchDiv.className = 'student-search';
+
 const input = document.createElement('input');
 input.placeholder = 'Search for students...';
+
 const button = document.createElement('button');
 button.textContent = 'search';
+
+const message = document.createElement('h4');
+message.textContent = 'No results';
+message.style.display = 'none';
+
 searchDiv.appendChild(input);
 searchDiv.appendChild(button);
+searchDiv.appendChild(message);
 
 const mainHeaderDiv = document.querySelector('div.page-header');
 mainHeaderDiv.appendChild(searchDiv);
 
 
+/**
+ * Search the words typed by user in <li> element's user name and 
+ * print elements found or 'No result' message
+ * @param {Array} studentsLi 
+ * @param {HTML element} searchInput 
+ */
+function search(studentsLi, searchInput) {
+   function printSearch(matches, lis){
+      if(matches === false) {
+         message.style.display = '';
+      } else {
+         message.style.display = 'none';
+      }
+      showPage(lis,1);
+      appendPageLinks(lis);
+   
+   }
+
+   let matches = false;
+   const studentsSearch = [];
+   
+   // Loop global Array and populate a new one with elements found. 
+   // Change display to none in global Array elements
+   for (let i = 0; i < studentsLi.length; i++) {
+      const student = studentsLi[i].querySelector('h3').textContent.toLowerCase();
+      const search = searchInput.value.toLowerCase();
+
+      if (student.includes(search)) {
+         matches = true;
+         studentsSearch.push(studentsLi[i]);
+      } 
+      studentsLi[i].style.display = 'none';
+   }
+
+   printSearch(matches, studentsSearch);
+}
+
+// Event listener for button 'Search'
+button.addEventListener('click', (e) => {
+   const input = e.target.previousElementSibling;
+   search(studentsLi,input);
+});
+
+// Event Listener for input text
+input.addEventListener('keyup', (e) => {
+   console.log(e.target.value);
+   search(studentsLi,e.target);
+});
 
 /*** 
-   Create the `showPage` function to hide all of the items in the 
-   list except for the ten you want to show.
-
-   Pro Tips: 
-     - Keep in mind that with a list of 54 students, the last page 
-       will only display four.
-     - Remember that the first student has an index of 0.
      - Remember that a function `parameter` goes in the parens when 
        you initially define the function, and it acts as a variable 
        or a placeholder to represent the actual function `argument` 
        that will be passed into the parens later when you call or 
        "invoke" the function 
 ***/
+/**
+ * Hide all of the items in the list except for the $itemToshow you want to show
+ * in a given page
+ * @param {Array} lis 
+ * @param {number} page 
+ */
 function showPage(lis, page) {
    const startIndex = (page * itemsToShow) - itemsToShow;
    const endIndex = page * itemsToShow;
@@ -62,8 +113,17 @@ function showPage(lis, page) {
    }
 }
 
-
+/**
+ * Create <li> element with an <a> element
+ * @param {number} page 
+ */
 function createLi(page) {
+   /**
+    * Create an <tagName> element with its properties and properties' values
+    * @param {String} tagName 
+    * @param {Array} properties 
+    * @param {Array} values 
+    */
    function createElement(tagName, properties, values){
       const element = document.createElement(tagName);
    
@@ -74,7 +134,12 @@ function createLi(page) {
       }
       return element;
    }
-   
+   /**
+    * Append <tagName> element to a <li> element
+    * @param {string} tagName 
+    * @param {Array} properties 
+    * @param {Array} values 
+    */
    function appendToLi(tagName, properties, values) {
       const element = createElement(tagName,properties,values);
       li.appendChild(element);
@@ -85,16 +150,17 @@ function createLi(page) {
    return li;
 }
 
-/*** 
- Create the `appendPageLinks function` to generate, append, and add 
- functionality to the pagination buttons.
- ***/
+/**
+ * Generate, append, and add functionality to the pagination buttons.
+ * @param {Array} lis 
+ */
 function appendPageLinks(lis) {
    const mainDiv = document.querySelector('div.page');
-   const div = document.createElement('div')
+   const oldDiv = mainDiv.querySelector('div.pagination');
+   const div = document.createElement('div');
    const ul = document.createElement('ul');
    const pages = parseInt(Math.ceil(lis.length / itemsToShow));  
-   
+
    div.className = 'pagination';
    
    for (let i = 1; i <= pages; i++) {
@@ -104,15 +170,20 @@ function appendPageLinks(lis) {
    // define class active in 'a' element in first 'li'
    ul.firstElementChild.querySelector('a').className = 'active';
    div.appendChild(ul);
-   mainDiv.appendChild(div);
-
+   
+   if (oldDiv) {
+      mainDiv.removeChild(oldDiv);
+   }
+      mainDiv.appendChild(div);
+   
+   
    div.addEventListener('click', (e) => {
       const link = e.target;
       if( link.tagName === 'A') {
          // Get element 'a' active before click
          const oldActive = link.parentNode.parentNode.querySelector('a.active');
          oldActive.className = '';
-         showPage(studentsLi,link.textContent);
+         showPage(lis,link.textContent);
          link.className = 'active';
       }
    });
@@ -120,7 +191,3 @@ function appendPageLinks(lis) {
 
 showPage(studentsLi, 1);
 appendPageLinks(studentsLi);
-
-
-
-// Remember to delete the comments that came with this file, and replace them with your own code comments.
